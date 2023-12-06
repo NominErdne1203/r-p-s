@@ -11,6 +11,8 @@ const outcomes = {
 };
 
 export default function Home() {
+  const [started, setStarted] = useState(false);
+  const [roundEnded, setRoundEnded] = useState(false);
   const [userChoice, setUserChoice] = useState<Choice | null>(null);
   const [cpuChoice, setCpuChoice] = useState<Choice | null>(null);
   const [timer, setTimer] = useState(10);
@@ -24,7 +26,7 @@ export default function Home() {
     const cpuRandomChoice = choices[cpuRandoms];
     setCpuChoice(cpuRandomChoice);
     winner(choice, cpuRandomChoice);
-    setTimer(10);
+    setRoundEnded(true);
   };
   const winner = (usr: Choice, cpu: Choice) => {
     const outcome = outcomes[usr][cpu];
@@ -40,11 +42,20 @@ export default function Home() {
       setScores({ ...scores, bot: scores.bot + 1 });
     }
   };
-
-  if (!intervalRef.current)
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
     intervalRef.current = setInterval(() => {
       setTimer((timer) => timer - 1);
     }, 1000);
+  };
+
+  const stopTimer = () => {
+    clearInterval(intervalRef.current);
+  };
+
+  if (started) startTimer();
+
+  if (roundEnded) stopTimer();
 
   useEffect(() => {
     if (timer === 0) {
@@ -57,7 +68,6 @@ export default function Home() {
   useEffect(() => {
     const { bot, player } = scores;
     if (bot === 3 || player === 3) {
-      setScores({ bot: 0, player: 0 });
     }
   }, [scores]);
 
@@ -74,22 +84,51 @@ export default function Home() {
           <div className="text-xl">Ai</div>
         </h1>
         <div className="fixed bottom-24 left-[50%] -translate-x-[50%]">
-          {title && <h1 className="text-4xl text-center">{title}</h1>}
-          {!title && <h1 className="text-4xl">Choose Your Movement</h1>}
-          <div className="relative z-50">
-            {choices.map((choice) => (
-              <button key={choice} className="" onClick={() => handleUserChoice(choice)}>
-                <Image alt={choice} src={`/button-${choice}.png`} width={222} height={222} />
-              </button>
+          {started &&
+            (!roundEnded ? (
+              <>
+                <h1 className="text-4xl">Choose Your Movement</h1>
+                <div className="relative z-50">
+                  {choices.map((choice) => (
+                    <button key={choice} className="hover:rotate-12 duration-300" onClick={() => handleUserChoice(choice)}>
+                      <Image alt={choice} src={`/button-${choice}.png`} width={222} height={222} />
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                {title && <h1 className="text-4xl text-center">{title}</h1>}
+                <div className="relative z-50">
+                  <div>
+                    <div
+                      className="border-2 border-white p-4 px-6  uppercase text-3xl cursor-pointer mt-6"
+                      onClick={() => {
+                        setTimer(10);
+                        startTimer();
+                        setRoundEnded(false);
+                      }}
+                    >
+                      Next round
+                    </div>
+                  </div>
+                </div>
+              </>
             ))}
-          </div>
+          {!started && (
+            <div>
+              <div className="border-2 border-white p-4 px-6  uppercase text-3xl cursor-pointer" onClick={() => setStarted(true)}>
+                start game
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="fixed -right-24 -bottom-14 z-10" style={{ "--tw-rotate": "45deg", transform: "scaleX(-1) translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))" }}>
         <Image alt={"player-choice"} src={`/human-${userChoice || "rock"}.png`} width={400} height={900} />
       </div>
       <div className="fixed -left-24 -bottom-14 z-10 rotate-45">
-        <Image alt={"bot-choice"} src={`/robot-${cpuChoice || "rock"}.png`} width={400} height={900} />
+        <Image alt={"bot-choice"} className="duration-300 transition-all" src={`/robot-${cpuChoice || "rock"}.png`} width={400} height={900} />
       </div>
     </div>
   );
