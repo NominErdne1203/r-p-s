@@ -124,7 +124,7 @@ export default function Home() {
           )}
         </div>
       </div>
-      <div className="fixed -right-24 -bottom-14 z-10" style={{ "--tw-rotate": "45deg", transform: "scaleX(-1) translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))" }}>
+      <div className="fixed -right-24 -bottom-14 z-10" style={{ transform: "scaleX(-1) translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(45deg) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))" }}>
         <Image alt={"player-choice"} src={`/human-${userChoice || "rock"}.png`} width={400} height={900} />
       </div>
       <div className="fixed -left-24 -bottom-14 z-10 rotate-45">
