@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+import Image from "next/image";
 type Choice = "rock" | "paper" | "scissors";
 
 const choices: Choice[] = ["rock", "paper", "scissors"];
@@ -65,40 +65,31 @@ export default function Home() {
     <div className="h-screen grid place-items-center bg-[#9DCAFF]">
       <div>
         <h1 className="fixed top-8 right-8 text-4xl">{timer}</h1>
-        <h1>You({scores.player})</h1>
-        <ul className="flex gap-4">
-          <li
-            className={`${userChoice !== "scissors" && "opacity-30"} ${userChoice === null && "opacity-100"}`}
-            onClick={() => {
-              handleUserChoice("scissors");
-            }}
-          >
-            ✂️
-          </li>
-          <li
-            className={`${userChoice !== "rock" && "opacity-30"} ${userChoice === null && "opacity-100"}`}
-            onClick={() => {
-              handleUserChoice("rock");
-            }}
-          >
-            🪨
-          </li>
-          <li
-            className={`${userChoice !== "paper" && "opacity-30"} ${userChoice === null && "opacity-100"}`}
-            onClick={() => {
-              handleUserChoice("paper");
-            }}
-          >
-            📰
-          </li>
-        </ul>
-        <h1>CPU({scores.bot})</h1>
-        <ul className="flex gap-4">
-          <li className={`${cpuChoice !== "scissors" && "opacity-30"} ${cpuChoice === null && "opacity-100"}`}>✂️</li>
-          <li className={`${cpuChoice !== "rock" && "opacity-30"} ${cpuChoice === null && "opacity-100"}`}>🪨</li>
-          <li className={`${cpuChoice !== "paper" && "opacity-30"} ${cpuChoice === null && "opacity-100"}`}>📰</li>
-        </ul>
-        {title && <h1>{title}</h1>}
+        <h1 className="fixed top-10 right-[30%] text-4xl text-center">
+          {scores.player}
+          <div className="text-xl">You</div>
+        </h1>
+        <h1 className="fixed top-10 left-[30%] text-4xl">
+          {scores.bot}
+          <div className="text-xl">Ai</div>
+        </h1>
+        <div className="fixed bottom-24 left-[50%] -translate-x-[50%]">
+          {title && <h1 className="text-4xl text-center">{title}</h1>}
+          {!title && <h1 className="text-4xl">Choose Your Movement</h1>}
+          <div className="relative z-50">
+            {choices.map((choice) => (
+              <button key={choice} className="" onClick={() => handleUserChoice(choice)}>
+                <Image alt={choice} src={`/button-${choice}.png`} width={222} height={222} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="fixed -right-24 -bottom-14 z-10" style={{ "--tw-rotate": "45deg", transform: "scaleX(-1) translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))" }}>
+        <Image alt={"player-choice"} src={`/human-${userChoice || "rock"}.png`} width={400} height={900} />
+      </div>
+      <div className="fixed -left-24 -bottom-14 z-10 rotate-45">
+        <Image alt={"bot-choice"} src={`/robot-${cpuChoice || "rock"}.png`} width={400} height={900} />
       </div>
     </div>
   );
